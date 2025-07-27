@@ -1,0 +1,25 @@
+{
+  "name": "cte-website",
+  "version": "1.0.0",
+  "description": "Full-stack web app using Express, EJS, and MongoDB",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": ["Express", "EJS", "MongoDB", "CTE"],
+  "author": "Dhananjay",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emeraldbeast/cte-improved-website.git"
+  },
+  "bugs": {
+    "url": "https://github.com/emeraldbeast/cte-improved-website/issues"
+  },
+  "homepage": "https://github.com/emeraldbeast/cte-improved-website#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.5"
+  }
+}
