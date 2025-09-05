@@ -7,6 +7,11 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
 const User = require('./modules/user');
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
 
 const JWT_SECRET = process.env.JWT_SECRET;
 app.use(express.static('public'));
@@ -170,6 +175,4 @@ dashboardRouter.get("/courses", async (req, res) => {
 
 app.use("/dashboard", dashboardRouter);
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+module.exports = app; 
