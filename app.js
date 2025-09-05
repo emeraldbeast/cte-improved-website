@@ -7,10 +7,6 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
 const User = require('./modules/user');
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -175,4 +171,4 @@ dashboardRouter.get("/courses", async (req, res) => {
 
 app.use("/dashboard", dashboardRouter);
 
-module.exports = app; 
+app.listen(port); 
