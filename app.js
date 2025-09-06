@@ -1,7 +1,9 @@
 require("dotenv").config();
 const express = require('express');
+const connectDb = require('./db'); 
+connectDb(); 
 const app = express();
-const port = 3000;
+// const port = 3000;
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
@@ -170,6 +172,8 @@ dashboardRouter.post("/courses/deregister/:id", async (req, res) => {
 
 app.use("/dashboard", dashboardRouter);
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+const PORT = process.env.PORT||3000; 
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
