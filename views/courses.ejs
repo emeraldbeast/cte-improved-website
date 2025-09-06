@@ -55,7 +55,7 @@
         <% registeredCourses.forEach(course=> { %>
           <div class="flex flex-col bg-white rounded-lg shadow-md p-4">
             <img src="/images/<%= course.id %>.png" alt="<%= course.title %>"
-              class="w-full h-[450px] object-cover rounded-md shadow-sm">
+              class="w-full h-auto object-cover rounded-md shadow-sm">
             <div class="mt-4 text-lg font-semibold">
               <%= course.title %>
             </div>
@@ -63,8 +63,15 @@
               <%= course.org %>
             </div>
             <div class="flex justify-center gap-4 mt-4">
-              <button class="mt-auto bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">De-register</button>
-              <button class="mt-auto bg-blue-900 text-white py-2 px-4 rounded hover:bg-green-700">Handout</button>
+              <% const isRegistered=registeredCourseIds.includes(course.id); %>
+                <form action="/dashboard/courses/<%= isRegistered ? 'deregister' : 'register' %>/<%= course.id %>"
+                  method="POST">
+                  <button
+                    class="mt-auto <%= isRegistered ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' %> text-white py-2 px-4 rounded">
+                    <%= isRegistered ? 'De-register' : 'Register' %>
+                  </button>
+                </form>
+                <button class="mt-auto bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-900">Handout</button>
             </div>
           </div>
           <% }) %>
@@ -79,7 +86,7 @@
           <% unregisteredCourses.forEach(course=> { %>
             <div class="flex flex-col bg-white rounded-lg shadow-md p-4">
               <img src="/images/<%= course.id %>.png" alt="<%= course.title %>"
-                class="w-full h-[450px] object-cover rounded-md shadow-sm">
+                class="w-full h-auto object-cover rounded-md shadow-sm">
               <div class="mt-4 text-lg font-semibold">
                 <%= course.title %>
               </div>
@@ -87,8 +94,15 @@
                 <%= course.org %>
               </div>
               <div class="flex justify-center gap-4 mt-4">
-                <button class="mt-auto bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">Register</button>
-                <button class="mt-auto bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-900">Handout</button>
+                <% const isRegistered=registeredCourseIds.includes(course.id); %>
+                  <form action="/dashboard/courses/<%= isRegistered ? 'deregister' : 'register' %>/<%= course.id %>"
+                    method="POST">
+                    <button
+                      class="mt-auto <%= isRegistered ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' %> text-white py-2 px-4 rounded">
+                      <%= isRegistered ? 'De-register' : 'Register' %>
+                    </button>
+                  </form>
+                  <button class="mt-auto bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-900">Handout</button>
               </div>
             </div>
             <% }) %>

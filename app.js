@@ -8,8 +8,9 @@ const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
 const User = require('./modules/user');
 
-
 const JWT_SECRET = process.env.JWT_SECRET;
+
+// Middleware
 app.use(express.static('public'));
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -69,9 +70,16 @@ app.post("/signup", async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  const newUser = new User({ username, email, password: hashedPassword });
+  const newUser = new User({ username, email, password: hashedPassword, registeredCourses: [] });
   await newUser.save();
+  
+  const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, { expiresIn: "2d" });
 
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false,
+    maxAge: 2 * 24 * 60 * 60 * 1000,
+  });
   res.redirect("/dashboard");
 });
 
@@ -117,58 +125,51 @@ dashboardRouter.get("/", async (req, res) => {
 
 dashboardRouter.get("/courses", async (req, res) => {
   const allCourses = [
-    {
-      id: "algo",
-      title: "Introduction to C++ and Competitive Programming",
-      org: "AlgomaniaX"
-    },
-    {
-      id: "devsoc",
-      title: "Introduction to Full-Stack App Development",
-      org: "DevSoc"
-    },
-    {
-      id: "sofi",
-      title: "Investing 101: A Primer on Finance and Investing",
-      org: "SoFI"
-    },
-    {
-      id: "bgcc",
-      title: "Introduction to Consulting",
-      org: "BGCC"
-    },
-    {
-      id: "erc",
-      title: "Introduction to Robotics",
-      org: "ERC"
-    },
-    {
-      id: "aerod",
-      title: "Design, Build and Fly",
-      org: "AeroD"
-    },
-    {
-      id: "dwdg",
-      title: "Investment Banking - Mergers and Acquisitions",
-      org: "DWDG"
-    },
-    {
-      id: "saidl",
-      title: "Building LLMs from Scratch",
-      org: "SAiDL"
-    }
+    { id: "algo", title: "Introduction to C++ and Competitive Programming", org: "AlgomaniaX" },
+    { id: "devsoc", title: "Introduction to Full-Stack App Development", org: "DevSoc" },
+    { id: "sofi", title: "Investing 101: A Primer on Finance and Investing", org: "SoFI" },
+    { id: "bgcc", title: "Introduction to Consulting", org: "BGCC" },
+    { id: "erc", title: "Introduction to Robotics", org: "ERC" },
+    { id: "aerod", title: "Design, Build and Fly", org: "AeroD" },
+    { id: "dwdg", title: "Investment Banking - Mergers and Acquisitions", org: "DWDG" },
+    { id: "saidl", title: "Building LLMs from Scratch", org: "SAiDL" }
   ];
 
-  // Simulate registered course IDs for the logged-in user
-  const registeredCourseIds = ["algo","saidl"]; // Replace with dynamic logic later
+  const user = await User.findById(req.user.userId);
+  const registeredCourseIds = user.registeredCourses || [];
 
   const registeredCourses = allCourses.filter(course => registeredCourseIds.includes(course.id));
   const unregisteredCourses = allCourses.filter(course => !registeredCourseIds.includes(course.id));
 
-  res.render("courses", { registeredCourses, unregisteredCourses });
+  res.render("courses", { registeredCourses, unregisteredCourses, registeredCourseIds });
 });
 
+// Register a course
+dashboardRouter.post("/courses/register/:id", async (req, res) => {
+  const user = await User.findById(req.user.userId);
+  const courseId = req.params.id;
+
+  if (!user.registeredCourses.includes(courseId)) {
+    user.registeredCourses.push(courseId);
+    await user.save();
+  }
+
+  res.redirect("/dashboard/courses");
+});
+
+// De-register a course
+dashboardRouter.post("/courses/deregister/:id", async (req, res) => {
+  const user = await User.findById(req.user.userId);
+  const courseId = req.params.id;
+
+  user.registeredCourses = user.registeredCourses.filter(id => id !== courseId);
+  await user.save();
+
+  res.redirect("/dashboard/courses");
+});
 
 app.use("/dashboard", dashboardRouter);
 
-app.listen(port); 
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
