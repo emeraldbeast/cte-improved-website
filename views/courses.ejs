@@ -51,7 +51,7 @@
   <% if (registeredCourses.length===0) { %>
     <p class="text-gray-600 p-6 mb-8">You have not registered for any courses yet.</p>
     <% } else { %>
-      <div class="grid grid-cols-1 p-6 md:grid-cols-3 gap-6 mb-12">
+      <div class="grid grid-cols-1  p-6 md:grid-cols-3 gap-6 mb-12">
         <% registeredCourses.forEach(course=> { %>
           <div class="flex flex-col bg-white rounded-lg shadow-md p-4">
             <img src="/images/<%= course.id %>.png" alt="<%= course.title %>"
