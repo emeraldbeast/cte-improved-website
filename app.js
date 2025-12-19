@@ -1,11 +1,14 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 
-app.use(express.static('public'));
-app.set("view engine", "ejs");
+app.use(express.static(path.join(process.cwd(), 'public')));
 
-app.get('/',(req,res)=>{
-    res.render("index"); 
-})
+app.set('views', path.join(process.cwd(), 'views'));
+app.set('view engine', 'ejs');
 
-module.exports = app; 
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
+module.exports = app;
